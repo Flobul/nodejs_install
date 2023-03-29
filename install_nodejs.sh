@@ -76,13 +76,13 @@ else
 fi
 silent type node
 if [ $? -eq 0 ]; then actual=`node -v`; else actual='Aucune'; fi
-testVer=$(php -r "echo version_compare('${actual}','v${minVer}','>=');")
 if [ "$LANG_DEP" = "fr" ]; then
 	echo -n "[Check Version NodeJS actuelle : ${actual} : "
 else
 	echo -n "[Check Current NodeJS Version : ${actual} : "
 fi
-if [[ $testVer == "1" ]]; then
+silent version_compare "${actual}" "${minVer}"
+if [ $? -ne 1 ]; then
   echo "[  OK  ]";
   new=$actual
 else
@@ -151,8 +151,8 @@ else
   else
   	echo -n "[Check NodeJS Version after install : ${new} : "
   fi
-  testVerAfter=$(php -r "echo version_compare('${new}','v${minVer}','>=');")
-  if [[ $testVerAfter != "1" ]]; then
+  silent version_compare "${new}" "${minVer}"
+  if [ $? -eq 1 ]; then
     if [ "$LANG_DEP" = "fr" ]; then
     	echo "[  KO  ] -> relancez les dépendances"
     else
